@@ -10,6 +10,7 @@ from ..Command_Hub import *
 FRAME_WIDTH = 1280
 FRAME_HEIGHT = 720
 
+# shows what the realsense is seeing
 def test_realsense():
     while 1:
         frame, _ = get_image()
@@ -102,6 +103,16 @@ def test_realsense():
         if key == ord("q"):
             break
 
+# tells you what the task is at this station
+def analyze_frame():
+    frame, _ = get_image()
+    results = apply_nn(frame)
+
+    for _, _, _, _, _, class_id in results.xyxy[0]:
+        # Convert from pytorch tensor to int
+        class_id = int(class_id)
+
+    return class_id
 
 def get_breaker_x_in_center_of_frame():
     frame, _ = get_image()

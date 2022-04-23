@@ -222,6 +222,13 @@ def moveRelDistXSLOW(dist):
         calcTrapVelTrajectoryTime(dist, VMAX, AMAX),
     )
 
+def moveRelDistXVERYSLOW(dist):
+    moveRelDist(
+        dist,
+        lambda t, dist: [trapezoidalVelocityProfile(t, dist, VMAX/4, AMAX), 0, 0],
+        calcTrapVelTrajectoryTime(dist, VMAX, AMAX),
+    )
+
 
 def moveRelDistY(dist):
     moveRelDist(

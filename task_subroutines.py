@@ -21,19 +21,16 @@ def flip_breaker_down(curr_x):
     time.sleep(0.5)
 
     send_SKR_command(x_pos=curr_x)
-    time.sleep(10)
     
     moveRelDistX(0.3)
     moveRelDistXSLOW(-0.15)
     extend_pair_retract_solo()
-    send_SKR_command(y_pos=30, z_pos=(100-44.45)) # 44.45 is the distance from the camera to the fingertip
-    time.sleep(5)
+    send_SKR_command(y_pos=30, z_pos=(80-44.45)) # 44.45 is the distance from the camera to the fingertip
 
     moveRelDistXSLOW(0.1)
+    moveRelDistXSLOW(-0.05)
     send_SKR_command(z_pos=0)
-    time.sleep(1)
     send_SKR_command(y_pos=65)
-    time.sleep(2)
 
     # align camera with middle of target breaker
     for _ in range(3):
@@ -44,28 +41,24 @@ def flip_breaker_down(curr_x):
         angle = np.deg2rad(pos / (FRAME_WIDTH / 2) * (69.4 / 2))
         # print(angle)
 
-        dist = np.tan(angle) * 100 # mm
+        dist = np.tan(angle) * 80 # mm
         curr_x -= dist
 
         send_SKR_command(x_pos=curr_x)
-        time.sleep(1)
 
     # Distance from end effector to camera is 38.1 mm (left)
     # Move finger to final position
-    curr_x += 43 # 38.1
+    curr_x += 38.1 + 5
     send_SKR_command(x_pos=curr_x, y_pos=90)
-    time.sleep(3)
 
-    send_SKR_command(z_pos=15)
-    moveRelDistX(0.1)
-    send_SKR_command(z_pos=0)
+    send_SKR_command(z_pos=17)
+    # moveRelDistXVERYSLOW(0.1)
+    # send_SKR_command(z_pos=0)
 
     send_SKR_command(y_pos=50)
-    time.sleep(3)
     extend_pair_extend_solo()
     time.sleep(.25)
     send_SKR_command(y_pos=0)
-    time.sleep(3)
 
     # reset all
     moveRelDistX(-0.1)
@@ -75,7 +68,7 @@ def flip_breaker_down(curr_x):
     moveRelDistX(-0.2)
     # wahoo?
 
-def flip_breaker_up():
+def flip_breaker_up(curr_x):
     time.sleep(1)
 
 def open_upwards_stopcock():
@@ -88,4 +81,13 @@ def open_towards_stopcock():
     time.sleep(1)
 
 def close_towards_stopcock():
+    time.sleep(1)
+
+def turn_upwards_spigot(angle):
+    time.sleep(1)
+
+def turn_towards_spigot(angle):
+    time.sleep(1)
+
+def turn_rotary_valve(angle):
     time.sleep(1)

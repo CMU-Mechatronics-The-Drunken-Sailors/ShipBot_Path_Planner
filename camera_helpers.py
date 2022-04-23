@@ -105,14 +105,20 @@ def test_realsense():
 
 # tells you what the task is at this station
 def analyze_frame():
+    # save analyzed frame
     frame, _ = get_image()
     results = apply_nn(frame)
+    results.render()
+    small_img = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
 
+    # save the identified object
+    class_id = 0
     for _, _, _, _, _, class_id in results.xyxy[0]:
         # Convert from pytorch tensor to int
         class_id = int(class_id)
+        # pick only one object to return
 
-    return class_id
+    return small_img, class_id
 
 def get_breaker_x_in_center_of_frame():
     frame, _ = get_image()

@@ -157,7 +157,7 @@ def update_odometry():
     fbTh += dth
     fbTh = np.arctan2(np.sin(fbTh), np.cos(fbTh))
 
-    print(fbX, fbY, fbTh)
+    # print(fbX, fbY, fbTh)
     last_enc = new_enc
 
 
@@ -198,9 +198,9 @@ def moveRelDist(dist, traj_fn, tf):
         vx, vy, w = add_feedback(vx, vy, w)
         cmd_mecanum_drive_kinematics(vx, vy, w)
 
-        if DEBUG:
+        # if DEBUG:
             # print(f"{vx:.3f}, {vy:.3f}, {w:.3f}")
-            print(f"{fbX:.3f}, {fbY:.3f}, {fbTh:.3f}")
+            # print(f"{fbX:.3f}, {fbY:.3f}, {fbTh:.3f}")
 
         update_odometry()
         time.sleep(max(0, UPDATE_FREQ - time.time() - t))

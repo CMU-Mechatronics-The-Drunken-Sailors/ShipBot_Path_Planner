@@ -6,6 +6,7 @@ from .camera_helpers import *
 
 # goes for left, middle, or right breaker
 def flip_breaker_down(curr_x):
+    print("Flip breaker down!")
     # # get into position (assuming we're starting ~0.2m away)
     # retract_pair_retract_solo()
     # time.sleep(0.5)
@@ -20,17 +21,23 @@ def flip_breaker_down(curr_x):
     retract_pair_retract_solo()
     time.sleep(0.5)
 
-    send_SKR_command(x_pos=curr_x)
+    send_SKR_command(x_pos=131.5)
     
-    moveRelDistX(0.3)
+    # Move forward to align, then move back
+    moveRelDistXSLOW(0.3)
     moveRelDistXSLOW(-0.15)
+
+    # Extend finger
     extend_pair_retract_solo()
     send_SKR_command(y_pos=30, z_pos=(80-44.45)) # 44.45 is the distance from the camera to the fingertip
 
-    moveRelDistXSLOW(0.1)
+    # Align with panel again
+    moveRelDistXVERYSLOW(0.1)
     moveRelDistXSLOW(-0.05)
+
+    # Move finger back
     send_SKR_command(z_pos=0)
-    send_SKR_command(y_pos=65)
+    send_SKR_command(x_pos=curr_x, y_pos=65)
 
     # align camera with middle of target breaker
     for _ in range(3):
@@ -69,25 +76,33 @@ def flip_breaker_down(curr_x):
     # wahoo?
 
 def flip_breaker_up(curr_x):
+    print("Flip breaker up!")
     time.sleep(1)
 
 def open_upwards_stopcock():
+    print("Open upwards stopcock!")
     time.sleep(1)
 
 def close_upwards_stopcock():
+    print("Close upwards stopcock!")
     time.sleep(1)
 
 def open_towards_stopcock():
+    print("Open towards stopcock!")
     time.sleep(1)
 
 def close_towards_stopcock():
+    print("Close towards stopcock!")
     time.sleep(1)
 
 def turn_upwards_spigot(angle):
+    print("Turn upwards spigot!")
     time.sleep(1)
 
 def turn_towards_spigot(angle):
+    print("Turn towards spigot!")
     time.sleep(1)
 
 def turn_rotary_valve(angle):
+    print("Turn rotary valve!")
     time.sleep(1)

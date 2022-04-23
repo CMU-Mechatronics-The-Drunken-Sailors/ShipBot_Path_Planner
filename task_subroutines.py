@@ -171,7 +171,63 @@ def close_upwards_stopcock():
 
 def open_towards_stopcock():
     print("Open towards stopcock!")
-    time.sleep(1)
+
+    # Align with wall
+    retract_pair_retract_solo()
+    time.sleep(0.5)
+    moveRelDistXSLOW(0.4)
+    moveRelDistXSLOW(-0.25)
+
+    # Extend finger to start pos (wait at least 1.5s so that the actuator is fully down)
+    extend_pair_retract_solo()
+    startTime = time.time()
+    curr_x, curr_y = 131.5, 90
+    send_SKR_command(x_pos=curr_x, y_pos=curr_y, z_pos=0)
+    time.sleep(max(0, 1.5 - (time.time() - startTime)))
+
+    # Center with valve
+    for _ in range(3):
+        x, y, rot = get_stopcock_pos()
+        if x is None or y is None:
+            curr_y -= 15
+            send_SKR_command(y_pos=curr_y)
+            continue
+        if rot is not None and rot > 45:
+            # We're done! Valve already in desired pose. Stop here
+            moveRelDistXSLOW(-0.15)
+            return
+
+        # Horizontal FOV is 69.4 degrees, VFOV is 42.5 degrees
+        angle_x = np.deg2rad(x / (FRAME_WIDTH / 2) * (69.4 / 2))
+        angle_y = np.deg2rad(y / (FRAME_HEIGHT / 2) * (42.5 / 2))
+        # print(angle)
+
+        dist_x = np.tan(angle_x) * 80 # mm
+        dist_y = np.tan(angle_y) * 80 # mm
+        curr_x -= dist_x
+        curr_y -= dist_y
+
+        send_SKR_command(x_pos=curr_x, y_pos=curr_y)
+
+    # Move to start position
+    moveRelDistXSLOW(0.05)
+    curr_x -= 75
+    curr_y -= 20
+    send_SKR_command(x_pos=curr_x, y_pos=curr_y, z_pos=50)
+
+    # Move to goal position
+    curr_x += 80
+    curr_y += 75
+    send_SKR_command(x_pos=curr_x, y_pos=curr_y)
+
+    # Move right a bit
+    curr_x -= 20
+    send_SKR_command(x_pos=curr_x)
+
+    # Back out
+    send_SKR_command(z_pos=0)
+    moveRelDistXSLOW(-0.2)
+
 
 def close_towards_stopcock():
     print("Close towards stopcock!")

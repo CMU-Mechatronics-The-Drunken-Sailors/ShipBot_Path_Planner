@@ -71,53 +71,98 @@ def orient_camera():
     print("Something to do here!")
     send_SKR_command(x_pos=131.5, y_pos=120, z_pos=0)
     extend_pair_retract_solo()
+    time.sleep(1)
 
 # assume that we are at the starting position, facing .58 m away from the wall
 def navigate_stations():
-    # go thru stations A to D
-    for station in station_list[0:3]: 
-        # check if we have something to do at this station
-        print("Currently on: " + station.name)
+    # get close to station A and perform task
+    station = station_list[0]
+    print("Currently on: " + station.name)
+    if len(station.task_list):
+        # get up close, perform task, then move back
+        orient_camera()
+        moveRelDistXSLOW(0.4)
+        time.sleep(1)
+        choose_task_subroutine(station)
+        moveRelDistXSLOW(-0.4)
+        time.sleep(1)
+    moveRelDistYSLOW(-0.3) # move to station B
 
-        if len(station.task_list):
-            # get up close and perform task
-            moveRelDistXSLOW(0.4)
-            time.sleep(1)
-            choose_task_subroutine(station)
+    # get close to station B and perform task
+    station = station_list[1]
+    print("Currently on: " + station.name)
+    if len(station.task_list):
+        # get up close, perform task, then move back
+        orient_camera()
+        moveRelDistXSLOW(0.4)
+        time.sleep(1)
+        choose_task_subroutine(station)
+        moveRelDistXSLOW(-0.4)
+        time.sleep(1)
+    moveRelDistYSLOW(-0.3) # move to station C
 
-        if not (station == station_list[3]): # we've reached station D
-            moveRelDistXSLOW(-0.4) # step back
-            moveRelDistY(-0.3) # move to next station
+    # get close to station C and perform task
+    station = station_list[2]
+    print("Currently on: " + station.name)
+    if len(station.task_list):
+        # get up close, perform task, then move back
+        orient_camera()
+        moveRelDistXSLOW(0.4)
+        time.sleep(1)
+        choose_task_subroutine(station)
+        moveRelDistXSLOW(-0.4)
+        time.sleep(1)
+    moveRelDistYSLOW(-0.3) # move to station D  
 
     # get close to station D and perform task
-    station = station[3]
+    station = station_list[3]
     print("Currently on: " + station.name)
     moveRelDistXSLOW(0.2) # move forward slightly
     if len(station.task_list):
         orient_camera()
-        choose_task_subroutine()
-    moveRelDistXSLOW(-0.2) # move back slightly
-    moveRelDistY(-0.3) # move to station E
+        choose_task_subroutine(station)
+        moveRelDistXSLOW(-0.2) # move back slightly
+    moveRelDistYSLOW(-0.3) # move to station E
 
-    # perform task for station E, then rotate to evaluate stations F/G/H
-    station = station[4]
+    # perform task for station E, then rotate to face station F
+    station = station_list[4]
+    print("Currently on: " + station.name)
+    moveRelDistXSLOW(0.2) # get closer
+    if len(station.task_list):
+        orient_camera()
+        choose_task_subroutine(station)
+    retract_pair_retract_solo()
+    turnRelAngle(-1.57079633) # rotate to face station F
+    time.sleep(1)
+    moveRelDistXSLOW(-0.2) # move back slightly
+    time.sleep(1)
+
+    # perform task for station F
+    station = station_list[5]
     print("Currently on: " + station.name)
     if len(station.task_list):
         orient_camera()
-        choose_task_subroutine()
-    turnRelAngle(-1.57079633) # rotate to face station F
-    moveRelDistXSLOW(-0.2) # move back slightly
+        choose_task_subroutine(station)
+    moveRelDistYSLOW(-0.3) # move over to station G
+    time.sleep(1)
 
+    # perform task for station G
+    station = station_list[6]
+    print("Currently on: " + station.name)
+    if len(station.task_list):
+        orient_camera()
+        choose_task_subroutine(station)
 
-    # evaluate each station in order of F -> G -> H
-    for station in station_list[5:8]:
-        # if len(station.task_list):
-            # moveRelDistX(0.4) # already up close
-            # choose_task_subroutine(station) # decide what task to perform
-            # moveRelDistX(-0.4) # step back
+    # check if we need to move over to station H, in case there is a pipe at the end
+    station = station_list[7]
+    if not len(station.task_list): return
+    moveRelDistYSLOW(-0.3) # move over to station H
+    time.sleep(1)
 
-        # if not (station == station_list[5]): # last station
-            # moveRelDistY(0.305) # move to next station
+    # perform task for station G
+    print("Currently on: " + station.name)
+    orient_camera()
+    choose_task_subroutine(station)
     
-    # job is done!
-    print("Job's done!")
+    # wahoo!
+    return

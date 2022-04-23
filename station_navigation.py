@@ -121,7 +121,7 @@ def navigate_stations():
     if len(station.task_list):
         orient_camera()
         choose_task_subroutine(station)
-        moveRelDistXSLOW(-0.2) # move back slightly
+        # moveRelDistXSLOW(-0.2) # move back slightly?
     moveRelDistYSLOW(-0.3) # move to station E
 
     # perform task for station E, then rotate to face station F

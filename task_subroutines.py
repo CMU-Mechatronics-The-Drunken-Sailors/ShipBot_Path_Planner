@@ -8,15 +8,6 @@ from .camera_helpers import *
 # goes for left, middle, or right breaker
 def flip_breaker_down(curr_x):
     print("Flip breaker down!")
-    # # get into position (assuming we're starting ~0.2m away)
-    # retract_pair_retract_solo()
-    # time.sleep(0.5)
-    # moveRelDistXSLOW(0.3)
-    # moveRelDistXSLOW(-0.1)
-
-    # extend_pair_retract_solo()
-    # send_SKR_command(y_pos=90, z_pos=5)
-    # time.sleep(3)
 
     # get into starting position
     retract_pair_retract_solo()
@@ -87,15 +78,6 @@ def flip_breaker_down(curr_x):
 
 def flip_breaker_up(curr_x):
     print("Flip breaker up!")
-    # # get into position (assuming we're starting ~0.2m away)
-    # retract_pair_retract_solo()
-    # time.sleep(0.5)
-    # moveRelDistXSLOW(0.3)
-    # moveRelDistXSLOW(-0.1)
-
-    # extend_pair_retract_solo()
-    # send_SKR_command(y_pos=90, z_pos=5)
-    # time.sleep(3)
 
     # get into starting position
     retract_pair_retract_solo()
@@ -186,38 +168,46 @@ def open_towards_stopcock():
     time.sleep(max(0, 1.5 - (time.time() - startTime)))
 
     # Center with valve
-    for _ in range(3):
+    max_refines = 3
+    for _ in range(5):
+        if max_refines <= 0:
+            break
+
         x, y, rot = get_stopcock_pos()
+        print(f"Detected stopcock rotation: {rot}")
         if x is None or y is None:
+            curr_x -= 25
             curr_y -= 15
-            send_SKR_command(y_pos=curr_y)
+            send_SKR_command(x_pos=curr_x, y_pos=curr_y)
             continue
         if rot is not None and rot > 45:
             # We're done! Valve already in desired pose. Stop here
             moveRelDistXSLOW(-0.15)
             return
+        
+        max_refines -= 1
 
         # Horizontal FOV is 69.4 degrees, VFOV is 42.5 degrees
         angle_x = np.deg2rad(x / (FRAME_WIDTH / 2) * (69.4 / 2))
         angle_y = np.deg2rad(y / (FRAME_HEIGHT / 2) * (42.5 / 2))
         # print(angle)
 
-        dist_x = np.tan(angle_x) * 80 # mm
-        dist_y = np.tan(angle_y) * 80 # mm
+        dist_x = np.tan(angle_x) * 110 # mm
+        dist_y = np.tan(angle_y) * 110 # mm
         curr_x -= dist_x
         curr_y -= dist_y
 
         send_SKR_command(x_pos=curr_x, y_pos=curr_y)
 
     # Move to start position
-    moveRelDistXSLOW(0.05)
-    curr_x -= 75
+    moveRelDistXSLOW(0.07)
+    curr_x -= 60
     curr_y -= 20
-    send_SKR_command(x_pos=curr_x, y_pos=curr_y, z_pos=50)
+    send_SKR_command(x_pos=curr_x, y_pos=curr_y, z_pos=65)
 
     # Move to goal position
-    curr_x += 80
-    curr_y += 75
+    curr_x += 85
+    curr_y += 125
     send_SKR_command(x_pos=curr_x, y_pos=curr_y)
 
     # Move right a bit

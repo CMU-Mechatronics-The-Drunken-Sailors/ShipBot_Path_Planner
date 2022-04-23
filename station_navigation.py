@@ -117,7 +117,7 @@ def navigate_stations():
     # get close to station D and perform task
     station = station_list[3]
     print("Currently on: " + station.name)
-    moveRelDistXSLOW(0.2) # move forward slightly
+    moveRelDistXSLOW(0.4) # move forward slightly
     if len(station.task_list):
         orient_camera()
         choose_task_subroutine(station)
@@ -131,10 +131,11 @@ def navigate_stations():
     if len(station.task_list):
         orient_camera()
         choose_task_subroutine(station)
-    retract_pair_retract_solo()
-    turnRelAngle(-1.57079633) # rotate to face station F
+    retract_pair_retract_solo() # rotate to face station F
+    turnRelAngle(-1.57079633)
     time.sleep(1)
-    moveRelDistXSLOW(-0.2) # move back slightly
+    moveRelDistYSLOW(0.3) # move left toward wall and back slightly
+    moveRelDistXSLOW(-0.2)
     time.sleep(1)
 
     # perform task for station F

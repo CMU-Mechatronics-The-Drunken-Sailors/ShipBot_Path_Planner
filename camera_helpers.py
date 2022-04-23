@@ -117,11 +117,17 @@ def analyze_frame(task_type):
         # Convert from pytorch tensor to int
         class_id = int(class_id)
 
-        # pick whatever class ID matches our current task
-        if task_type == 'V':
-            if not (class_id == NN_Labels.BREAKER):
+        # filter out miscellaneous detections in our image, based on our task
+        if task_type == 1: # spigot
+            if (class_id == NN_Labels.SPIGOTTOPVIEW) or (class_id == NN_Labels.SPIGOTSIDEVIEW):
                 chosen_class = int(class_id)
-        elif task_type == 'B':
+        elif task_type == 2: # rotary
+            if (class_id == NN_Labels.ROTARY):
+                chosen_class = int(class_id)
+        elif task_type == 3: # stopcock
+            if (class_id == NN_Labels.STOPCOCKTOPVIEW) or (class_id == NN_Labels.STOPCOCKSIDEVIEW):
+                chosen_class = int(class_id)
+        elif task_type == 'A' or task_type == 'B': # breaker
             if (class_id == NN_Labels.BREAKER):
                 chosen_class = int(class_id)
 
@@ -132,6 +138,7 @@ def get_breaker_x_in_center_of_frame():
     results = apply_nn(frame)
 
     best_cx = 100000
+    best_state = None
 
     for x1, y1, x2, y2, _, class_id in results.xyxy[0]:
         # Convert from pytorch tensor to int
@@ -147,14 +154,16 @@ def get_breaker_x_in_center_of_frame():
             if class_id == NN_Labels.BREAKER:
                 cx, _ = (x1 + x2) / 2, (y1 + y2) / 2
 
+                state = None
                 res = detect_breaker_state(frame, (x1, y1, x2, y2))
                 if res is not None:
-                    _, cx, _ = res
+                    state, cx, _ = res
 
                 cx_norm = cx - frame.shape[1] / 2
 
                 if abs(cx_norm) < abs(best_cx):
                     best_cx = cx_norm
+                    best_state = state
 
-    return best_cx
+    return best_cx, best_state
                 

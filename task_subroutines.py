@@ -21,15 +21,15 @@ def flip_breaker_down(curr_x):
     retract_pair_retract_solo()
     time.sleep(0.5)
 
-    send_SKR_command(x_pos=131.5)
+    send_SKR_command(x_pos=131.5, z_pos=0)
     
     # Move forward to align, then move back
     moveRelDistXSLOW(0.3)
-    moveRelDistXSLOW(-0.15)
+    moveRelDistXSLOW(-0.12)
 
     # Extend finger
     extend_pair_retract_solo()
-    send_SKR_command(y_pos=30, z_pos=(80-44.45)) # 44.45 is the distance from the camera to the fingertip
+    send_SKR_command(y_pos=30, z_pos=(15)) # 44.45 is the distance from the camera to the fingertip
 
     # Align with panel again
     moveRelDistXVERYSLOW(0.1)
@@ -55,10 +55,11 @@ def flip_breaker_down(curr_x):
 
     # Distance from end effector to camera is 38.1 mm (left)
     # Move finger to final position
-    curr_x += 38.1 + 5
+    curr_x += 38.1 + 2
     send_SKR_command(x_pos=curr_x, y_pos=90)
 
-    send_SKR_command(z_pos=17)
+    # Flip breaker
+    send_SKR_command(z_pos=22)
     # moveRelDistXVERYSLOW(0.1)
     # send_SKR_command(z_pos=0)
 
@@ -68,11 +69,11 @@ def flip_breaker_down(curr_x):
     send_SKR_command(y_pos=0)
 
     # reset all
-    moveRelDistX(-0.1)
+    moveRelDistXSLOW(-0.1)
     extend_pair_retract_solo()
     send_SKR_command(y_pos=100, z_pos=5)
 
-    moveRelDistX(-0.2)
+    moveRelDistX(-0.1)
     # wahoo?
 
 def flip_breaker_up(curr_x):

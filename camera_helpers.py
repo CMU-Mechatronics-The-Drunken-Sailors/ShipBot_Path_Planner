@@ -104,7 +104,7 @@ def test_realsense():
             break
 
 # tells you what the task is at this station
-def analyze_frame():
+def analyze_frame(task_type):
     # save analyzed frame
     frame, _ = get_image()
     results = apply_nn(frame)
@@ -112,13 +112,20 @@ def analyze_frame():
     small_img = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
 
     # save the identified object
-    class_id = 0
+    chosen_class = -1
     for _, _, _, _, _, class_id in results.xyxy[0]:
         # Convert from pytorch tensor to int
         class_id = int(class_id)
-        # pick only one object to return
 
-    return small_img, class_id
+        # pick whatever class ID matches our current task
+        if task_type == 'V':
+            if not (class_id == NN_Labels.BREAKER):
+                chosen_class = int(class_id)
+        elif task_type == 'B':
+            if (class_id == NN_Labels.BREAKER):
+                chosen_class = int(class_id)
+
+    return small_img, chosen_class
 
 def get_breaker_x_in_center_of_frame():
     frame, _ = get_image()

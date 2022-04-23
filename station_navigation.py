@@ -16,7 +16,7 @@ def choose_task_subroutine(station):
             if task[0] == 1: # spigot task
                 # evaluate orientation of spigot
                 angle = task[1]
-                frame, spigot_orientation = analyze_frame()
+                frame, spigot_orientation = analyze_frame(station.task_type)
                 cv2.imwrite("/home/mechatronics/Desktop/Mechatronics/Command_Hub/debug_photos/station_" + station.name + ".jpg", frame)
                 
                 # turn spigot
@@ -32,7 +32,7 @@ def choose_task_subroutine(station):
             if task[0] == 3: # stopcock task
                 # evaluate orientation of stopcock
                 position = task[1]
-                frame, stopcock_orientation = analyze_frame()
+                frame, stopcock_orientation = analyze_frame(station.task_type)
                 cv2.imwrite("/home/mechatronics/Desktop/Mechatronics/Command_Hub/debug_photos/station_" + station.name + ".jpg", frame)
                 
                 if position: # close stopcock

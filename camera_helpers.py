@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import time
 
 from ..CV_Module.nn import apply_nn, NN_Labels
 from ..CV_Module.breaker import detect_breaker_state, BreakerState
@@ -191,7 +192,7 @@ def get_stopcock_pos():
 
                 res = get_stopcock_valve_position(frame, (x1, y1, x2, y2))
                 if res is not None:
-                    rot, cx, cy = res
+                    rot, _, _ = res
 
                 cx_norm = cx - frame.shape[1] / 2
                 cy_norm = cy - frame.shape[0] / 2
@@ -200,5 +201,17 @@ def get_stopcock_pos():
                     best_cx = cx_norm
                     best_cy = cy_norm
                     best_rot = rot
+
+        # # Draw line from center at angle rot
+        # cx = int(frame.shape[1] / 2 + best_cx)
+        # cy = int(frame.shape[0] / 2 + best_cy)
+        # cv2.line(
+        #     frame,
+        #     (cx, cy),
+        #     (cx + int(np.cos(best_rot) * 300), cy + int(np.sin(best_rot) * 300)),
+        #     (0, 255, 0),
+        #     2,
+        # )
+        # cv2.imwrite("/home/mechatronics/Desktop/Mechatronics/Command_Hub/debug_photos/stopcock_{}.png".format(int(time.time()*100)), frame)
 
     return best_cx, best_cy, best_rot

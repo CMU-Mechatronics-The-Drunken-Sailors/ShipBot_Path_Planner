@@ -1,4 +1,3 @@
-from ast import Num
 import time
 
 from . import *
@@ -6,9 +5,9 @@ from ..Command_Hub import *
 from .planner import *
 from .camera_helpers import *
 
-LEFT_BREAKER = 262
+LEFT_BREAKER = 240
 MID_BREAKER = 131.5
-RIGHT_BREAKER = 75
+RIGHT_BREAKER = 60
 
 def choose_task_subroutine(station):
     for task in station.task_list:
@@ -81,7 +80,7 @@ def navigate_stations():
     if len(station.task_list):
         # get up close, perform task, then move back
         orient_camera()
-        moveRelDistXSLOW(0.4)
+        moveRelDistXSLOW(0.55)
         time.sleep(1)
         choose_task_subroutine(station)
         moveRelDistXSLOW(-0.4)
@@ -94,7 +93,7 @@ def navigate_stations():
     if len(station.task_list):
         # get up close, perform task, then move back
         orient_camera()
-        moveRelDistXSLOW(0.4)
+        moveRelDistXSLOW(0.55)
         time.sleep(1)
         choose_task_subroutine(station)
         moveRelDistXSLOW(-0.4)
@@ -107,7 +106,7 @@ def navigate_stations():
     if len(station.task_list):
         # get up close, perform task, then move back
         orient_camera()
-        moveRelDistXSLOW(0.4)
+        moveRelDistXSLOW(0.55)
         time.sleep(1)
         choose_task_subroutine(station)
         moveRelDistXSLOW(-0.4)
@@ -117,7 +116,7 @@ def navigate_stations():
     # get close to station D and perform task
     station = station_list[3]
     print("Currently on: " + station.name)
-    moveRelDistXSLOW(0.4) # move forward slightly
+    moveRelDistXSLOW(0.3) # move forward slightly
     if len(station.task_list):
         orient_camera()
         choose_task_subroutine(station)
@@ -127,14 +126,14 @@ def navigate_stations():
     # perform task for station E, then rotate to face station F
     station = station_list[4]
     print("Currently on: " + station.name)
-    moveRelDistXSLOW(0.2) # get closer
     if len(station.task_list):
         orient_camera()
         choose_task_subroutine(station)
     retract_pair_retract_solo() # rotate to face station F
     turnRelAngle(-1.57079633)
     time.sleep(1)
-    moveRelDistYSLOW(0.3) # move left toward wall and back slightly
+    moveRelDistY(0.4) # move left toward wall and back slightly
+    moveRelDistYSLOW(-0.05)
     moveRelDistXSLOW(-0.2)
     time.sleep(1)
 

@@ -349,7 +349,7 @@ def open_towards_stopcock():
     send_SKR_command(x_pos=curr_x, y_pos=curr_y, z_pos=65)
 
     # Move to goal position
-    curr_x += 105
+    curr_x += 85
     curr_y += 125
     send_SKR_command(x_pos=curr_x, y_pos=curr_y)
 

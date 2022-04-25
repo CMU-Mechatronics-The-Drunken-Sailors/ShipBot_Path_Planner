@@ -283,7 +283,7 @@ def close_upwards_stopcock():
     send_SKR_command(x_pos=curr_x, z_pos=curr_y)
 
     # Move back a bit
-    curr_x -= 80
+    curr_x -= 10
     curr_y -= 50
     send_SKR_command(x_pos=curr_x, z_pos=curr_y)
 

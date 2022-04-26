@@ -114,11 +114,14 @@ lastFFTickTime = time.time()
 
 
 def resetFF(newX, newY, newTh):
-    global ffX, ffY, ffTh, lastFFTickTime
+    global ffX, ffY, ffTh, fbX, fbY, fbTh, lastFFTickTime
 
     ffX = newX
     ffY = newY
     ffTh = newTh
+    fbX = newX
+    fbY = newY
+    fbTh = newTh
     lastFFTickTime = time.time()
 
 
@@ -218,7 +221,7 @@ def moveRelDistX(dist):
 def moveRelDistXSLOW(dist):
     moveRelDist(
         dist,
-        lambda t, dist: [trapezoidalVelocityProfile(t, dist, VMAX/2, AMAX), 0, 0],
+        lambda t, dist: [trapezoidalVelocityProfile(t, dist, VMAX/1.75, AMAX), 0, 0],
         calcTrapVelTrajectoryTime(dist, VMAX, AMAX),
     )
 
@@ -252,6 +255,7 @@ def turnRelAngle(angle):
         lambda t, dist: [0, 0, trapezoidalVelocityProfile(t, dist, WMAX, ALPHAMAX)],
         calcTrapVelTrajectoryTime(angle, WMAX, ALPHAMAX),
     )
+    resetFF(0,0,0)
 
 
 ##### Interface with motors #####

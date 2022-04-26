@@ -122,6 +122,8 @@ def analyze_frame(task_type):
         if task_type == 1: # spigot
             if (class_id == NN_Labels.SPIGOTTOPVIEW) or (class_id == NN_Labels.SPIGOTSIDEVIEW):
                 chosen_class = int(class_id)
+            elif (class_id == NN_Labels.ROTARY): # In case we get this incorrect detection
+                chosen_class = int(NN_Labels.SPIGOTTOPVIEW)
         elif task_type == 2: # rotary
             if (class_id == NN_Labels.ROTARY):
                 chosen_class = int(class_id)
@@ -213,5 +215,53 @@ def get_stopcock_pos():
         #     2,
         # )
         # cv2.imwrite("/home/mechatronics/Desktop/Mechatronics/Command_Hub/debug_photos/stopcock_{}.png".format(int(time.time()*100)), frame)
+
+    return best_cx, best_cy, best_rot
+
+def get_spigot_pos():
+    frame, _ = get_image()
+    results = apply_nn(frame)
+
+    best_cx = 100000
+    best_cy = None
+    best_rot = None
+
+    for x1, y1, x2, y2, _, class_id in results.xyxy[0]:
+        # Convert from pytorch tensor to int
+        class_id = int(class_id)
+        x1 = int(x1)
+        y1 = int(y1)
+        x2 = int(x2)
+        y2 = int(y2)
+
+        # Check that width and height are greater than zero
+        if x2 - x1 > 0 and y2 - y1 > 0:
+
+            if class_id == NN_Labels.SPIGOTTOPVIEW:
+                rot, cx, cy = 0, (x1 + x2) / 2, (y1 + y2) / 2
+
+                res = get_spigot_valve_position(frame, (x1, y1, x2, y2))
+                if res is not None:
+                    rot, cx, cy = res
+
+                cx_norm = cx - frame.shape[1] / 2
+                cy_norm = cy - frame.shape[0] / 2
+
+                if abs(cx_norm) < abs(best_cx):
+                    best_cx = cx_norm
+                    best_cy = cy_norm
+                    best_rot = rot
+
+                # Draw line from center at angle rot
+                cx = int(frame.shape[1] / 2 + best_cx)
+                cy = int(frame.shape[0] / 2 + best_cy)
+                cv2.line(
+                    frame,
+                    (cx, cy),
+                    (cx + int(np.cos(best_rot) * 300), cy + int(np.sin(best_rot) * 300)),
+                    (0, 255, 0),
+                    2,
+                )
+                cv2.imwrite("/home/mechatronics/Desktop/Mechatronics/Command_Hub/debug_photos/spigot_{}.png".format(int(time.time()*100)), frame)
 
     return best_cx, best_cy, best_rot

@@ -68,12 +68,16 @@ def choose_task_subroutine(station):
  # get the camera in position for task
 def orient_camera():
     print("Something to do here!")
-    send_SKR_command(x_pos=131.5, y_pos=120, z_pos=0)
+    send_SKR_command(x_pos=80, y_pos=80, z_pos=0)
     extend_pair_retract_solo()
     time.sleep(1)
 
 # assume that we are at the starting position, facing .58 m away from the wall
 def navigate_stations():
+    # # Reverse
+    # moveRelDistXSLOW(-0.2)
+    # extend_pair_retract_solo()
+
     # get close to station A and perform task
     station = station_list[0]
     print("Currently on: " + station.name)
@@ -116,7 +120,12 @@ def navigate_stations():
     # get close to station D and perform task
     station = station_list[3]
     print("Currently on: " + station.name)
-    moveRelDistXSLOW(0.3) # move forward slightly
+    retract_pair_retract_solo()
+    moveRelDistX(0.65) # Slam against wall to align
+    moveRelDistXSLOW(-0.25)
+    extend_pair_retract_solo()
+    time.sleep(2)
+    # moveRelDistXSLOW(0.3) # move forward slightly
     if len(station.task_list):
         orient_camera()
         choose_task_subroutine(station)
@@ -133,9 +142,11 @@ def navigate_stations():
     turnRelAngle(-1.57079633)
     time.sleep(1)
     moveRelDistY(0.4) # move left toward wall and back slightly
-    moveRelDistYSLOW(-0.05)
-    moveRelDistXSLOW(-0.2)
+    moveRelDistYSLOW(-0.1)
+    moveRelDistXSLOW(-0.25)
+    moveRelDistY(0.2)
     time.sleep(1)
+    resetFF(0,0,0)
 
     # perform task for station F
     station = station_list[5]

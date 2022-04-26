@@ -89,7 +89,7 @@ def navigate_stations():
         choose_task_subroutine(station)
         moveRelDistXSLOW(-0.4)
         time.sleep(1)
-    moveRelDistYSLOW(-0.3) # move to station B
+    moveRelDistYSLOW(-0.315) # move to station B
 
     # get close to station B and perform task
     station = station_list[1]
@@ -102,7 +102,7 @@ def navigate_stations():
         choose_task_subroutine(station)
         moveRelDistXSLOW(-0.4)
         time.sleep(1)
-    moveRelDistYSLOW(-0.3) # move to station C
+    moveRelDistYSLOW(-0.315) # move to station C
 
     # get close to station C and perform task
     station = station_list[2]
@@ -115,7 +115,7 @@ def navigate_stations():
         choose_task_subroutine(station)
         moveRelDistXSLOW(-0.4)
         time.sleep(1)
-    moveRelDistYSLOW(-0.3) # move to station D  
+    moveRelDistYSLOW(-0.315) # move to station D  
 
     # get close to station D and perform task
     station = station_list[3]
@@ -130,7 +130,7 @@ def navigate_stations():
         orient_camera()
         choose_task_subroutine(station)
         # moveRelDistXSLOW(-0.2) # move back slightly?
-    moveRelDistYSLOW(-0.3) # move to station E
+    moveRelDistYSLOW(-0.315) # move to station E
 
     # perform task for station E, then rotate to face station F
     station = station_list[4]

@@ -32,7 +32,7 @@ ALPHAMAX = 0.7
 WMAX = 1
 
 FBK_ON = True
-FBK_lambda = 7
+FBK_lambda = 11 #7
 FBK_kX = 1.0 / FBK_lambda
 FBK_kY = 1.0 / (FBK_lambda)
 FBK_kTh = 2.0 / FBK_lambda * 1.5
@@ -217,6 +217,7 @@ def moveRelDistX(dist):
         lambda t, dist: [trapezoidalVelocityProfile(t, dist, VMAX, AMAX), 0, 0],
         calcTrapVelTrajectoryTime(dist, VMAX, AMAX),
     )
+    # resetFF(0,0,0)
 
 def moveRelDistXSLOW(dist):
     moveRelDist(
@@ -224,6 +225,7 @@ def moveRelDistXSLOW(dist):
         lambda t, dist: [trapezoidalVelocityProfile(t, dist, VMAX/1.75, AMAX), 0, 0],
         calcTrapVelTrajectoryTime(dist, VMAX, AMAX),
     )
+    # resetFF(0,0,0)
 
 def moveRelDistXVERYSLOW(dist):
     moveRelDist(
@@ -231,6 +233,7 @@ def moveRelDistXVERYSLOW(dist):
         lambda t, dist: [trapezoidalVelocityProfile(t, dist, VMAX/4, AMAX), 0, 0],
         calcTrapVelTrajectoryTime(dist, VMAX, AMAX),
     )
+    # resetFF(0,0,0)
 
 
 def moveRelDistY(dist):
@@ -239,6 +242,7 @@ def moveRelDistY(dist):
         lambda t, dist: [0, trapezoidalVelocityProfile(t, dist, VMAX, AMAX), 0],
         calcTrapVelTrajectoryTime(dist, VMAX, AMAX),
     )
+    # resetFF(0,0,0)
 
 
 def moveRelDistYSLOW(dist):
@@ -247,6 +251,7 @@ def moveRelDistYSLOW(dist):
         lambda t, dist: [0, trapezoidalVelocityProfile(t, dist, VMAX/2, AMAX), 0],
         calcTrapVelTrajectoryTime(dist, VMAX, AMAX),
     )
+    # resetFF(0,0,0)
 
 
 def turnRelAngle(angle):

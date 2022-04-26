@@ -226,42 +226,108 @@ def get_spigot_pos():
     best_cy = None
     best_rot = None
 
-    for x1, y1, x2, y2, _, class_id in results.xyxy[0]:
-        # Convert from pytorch tensor to int
-        class_id = int(class_id)
-        x1 = int(x1)
-        y1 = int(y1)
-        x2 = int(x2)
-        y2 = int(y2)
+    def process_results(label, best_cx, best_cy, best_rot):
 
-        # Check that width and height are greater than zero
-        if x2 - x1 > 0 and y2 - y1 > 0:
+        for x1, y1, x2, y2, _, class_id in results.xyxy[0]:
+            # Convert from pytorch tensor to int
+            class_id = int(class_id)
+            x1 = int(x1)
+            y1 = int(y1)
+            x2 = int(x2)
+            y2 = int(y2)
 
-            if class_id == NN_Labels.SPIGOTTOPVIEW:
-                rot, cx, cy = 0, (x1 + x2) / 2, (y1 + y2) / 2
+            # Check that width and height are greater than zero
+            if x2 - x1 > 0 and y2 - y1 > 0:
 
-                res = get_spigot_valve_position(frame, (x1, y1, x2, y2))
-                if res is not None:
-                    rot, cx, cy = res
+                if class_id == label:
+                    rot, cx, cy = 0, (x1 + x2) / 2, (y1 + y2) / 2
 
-                cx_norm = cx - frame.shape[1] / 2
-                cy_norm = cy - frame.shape[0] / 2
+                    res = get_spigot_valve_position(frame, (x1, y1, x2, y2))
+                    if res is not None:
+                        rot, cx, cy = res
 
-                if abs(cx_norm) < abs(best_cx):
-                    best_cx = cx_norm
-                    best_cy = cy_norm
-                    best_rot = rot
+                    cx_norm = cx - frame.shape[1] / 2
+                    cy_norm = cy - frame.shape[0] / 2
 
-                # Draw line from center at angle rot
-                cx = int(frame.shape[1] / 2 + best_cx)
-                cy = int(frame.shape[0] / 2 + best_cy)
-                cv2.line(
-                    frame,
-                    (cx, cy),
-                    (cx + int(np.cos(best_rot) * 300), cy + int(np.sin(best_rot) * 300)),
-                    (0, 255, 0),
-                    2,
-                )
-                cv2.imwrite("/home/mechatronics/Desktop/Mechatronics/Command_Hub/debug_photos/spigot_{}.png".format(int(time.time()*100)), frame)
+                    if abs(cx_norm) < abs(best_cx):
+                        best_cx = cx_norm
+                        best_cy = cy_norm
+                        best_rot = rot
+
+                    # Draw line from center at angle rot
+                    cx = int(frame.shape[1] / 2 + best_cx)
+                    cy = int(frame.shape[0] / 2 + best_cy)
+                    cv2.line(
+                        frame,
+                        (cx, cy),
+                        (cx + int(np.cos(best_rot) * 300), cy + int(np.sin(best_rot) * 300)),
+                        (0, 255, 0),
+                        2,
+                    )
+                    cv2.imwrite("/home/mechatronics/Desktop/Mechatronics/Command_Hub/debug_photos/spigot_{}.png".format(int(time.time()*100)), frame)
+
+        return best_cx, best_cy, best_rot
+
+    best_cx, best_cy, best_rot = process_results(NN_Labels.SPIGOTTOPVIEW, best_cx, best_cy, best_rot)
+    if best_rot is None:
+        # The valve might have mistakenly been flagged as a rotary valve.
+        best_cx, best_cy, best_rot = process_results(NN_Labels.ROTARY, best_cx, best_cy, best_rot)
+
+    return best_cx, best_cy, best_rot
+
+def get_rotary_pos():
+    frame, _ = get_image()
+    results = apply_nn(frame)
+
+    best_cx = 100000
+    best_cy = None
+    best_rot = None
+
+    def process_results(label, best_cx, best_cy, best_rot):
+
+        for x1, y1, x2, y2, _, class_id in results.xyxy[0]:
+            # Convert from pytorch tensor to int
+            class_id = int(class_id)
+            x1 = int(x1)
+            y1 = int(y1)
+            x2 = int(x2)
+            y2 = int(y2)
+
+            # Check that width and height are greater than zero
+            if x2 - x1 > 0 and y2 - y1 > 0:
+
+                if class_id == label:
+                    rot, cx, cy = 0, (x1 + x2) / 2, (y1 + y2) / 2
+
+                    res = get_spigot_valve_position(frame, (x1, y1, x2, y2))
+                    if res is not None:
+                        rot, cx, cy = res
+
+                    cx_norm = cx - frame.shape[1] / 2
+                    cy_norm = cy - frame.shape[0] / 2
+
+                    if abs(cx_norm) < abs(best_cx):
+                        best_cx = cx_norm
+                        best_cy = cy_norm
+                        best_rot = rot
+
+                    # Draw line from center at angle rot
+                    cx = int(frame.shape[1] / 2 + best_cx)
+                    cy = int(frame.shape[0] / 2 + best_cy)
+                    cv2.line(
+                        frame,
+                        (cx, cy),
+                        (cx + int(np.cos(best_rot) * 300), cy + int(np.sin(best_rot) * 300)),
+                        (0, 255, 0),
+                        2,
+                    )
+                    cv2.imwrite("/home/mechatronics/Desktop/Mechatronics/Command_Hub/debug_photos/rotary_{}.png".format(int(time.time()*100)), frame)
+
+        return best_cx, best_cy, best_rot
+
+    best_cx, best_cy, best_rot = process_results(NN_Labels.ROTARY, best_cx, best_cy, best_rot)
+    if best_rot is None:
+        # The valve might have mistakenly been flagged as a spigot valve.
+        best_cx, best_cy, best_rot = process_results(NN_Labels.SPIGOTTOPVIEW, best_cx, best_cy, best_rot)
 
     return best_cx, best_cy, best_rot

@@ -139,12 +139,14 @@ def navigate_stations():
         orient_camera()
         choose_task_subroutine(station)
     retract_pair_retract_solo() # rotate to face station F
+    moveRelDistYSLOW(0.1)
     turnRelAngle(-1.57079633)
     time.sleep(1)
     moveRelDistY(0.4) # move left toward wall and back slightly
     moveRelDistYSLOW(-0.1)
-    moveRelDistXSLOW(-0.25)
+    moveRelDistXSLOW(-0.225)
     moveRelDistY(0.2)
+    moveRelDistY(-0.025)
     time.sleep(1)
     resetFF(0,0,0)
 

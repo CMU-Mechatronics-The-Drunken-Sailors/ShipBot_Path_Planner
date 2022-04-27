@@ -26,7 +26,7 @@ def flip_breaker_down(curr_x):
 
     # Align with panel again
     moveRelDistXVERYSLOW(0.1)
-    moveRelDistXSLOW(-0.05)
+    moveRelDistX(-0.05)
 
     # Move finger back
     send_SKR_command(z_pos=0)
@@ -96,7 +96,7 @@ def flip_breaker_up(curr_x):
 
     # Align with panel again
     moveRelDistXVERYSLOW(0.1)
-    moveRelDistXSLOW(-0.05)
+    moveRelDistX(-0.05)
 
     # Move finger back
     send_SKR_command(z_pos=0)
@@ -437,7 +437,22 @@ def close_towards_stopcock():
 
 def turn_upwards_spigot(angle):
     print("Turn upwards spigot!")
-    time.sleep(1)
+    
+    # Align with wall
+    retract_pair_retract_solo()
+    time.sleep(0.5)
+    moveRelDistXSLOW(0.4)
+
+    # Back out
+    send_SKR_command(z_pos=0)
+    moveRelDistXSLOW(-0.2)
+
+    # Extend finger to start pos (wait at least 1.5s so that the actuator is fully down)
+    # extend_pair_extend_solo()
+    # startTime = time.time()
+    # curr_x, curr_y = 75, 5
+    # send_SKR_command(x_pos=curr_x, y_pos=215, z_pos=curr_y)
+    # time.sleep(max(0, 1.5 - (time.time() - startTime)))
 
 def turn_towards_spigot(angle):
     print("Turn towards spigot!")
@@ -450,7 +465,7 @@ def turn_towards_spigot(angle):
     retract_pair_retract_solo()
     time.sleep(0.5)
     moveRelDistXSLOW(0.4)
-    moveRelDistXSLOW(-0.2)
+    moveRelDistXSLOW(-0.165)
 
     # Extend finger to start pos (wait at least 1.5s so that the actuator is fully down)
     extend_pair_retract_solo()
@@ -508,14 +523,14 @@ def turn_towards_spigot(angle):
     # Move to start position
     # moveRelDistXSLOW(0.1)
     curr_x += 40
-    send_SKR_command(x_pos=curr_x)
-    curr_y += 15
-    send_SKR_command(y_pos=curr_y, z_pos=65)
+    curr_y += 5
+    send_SKR_command(x_pos=curr_x, y_pos=curr_y)
+    send_SKR_command(z_pos=40)
 
     # Calculate goal position
     delta_angle = angle - curr_rot
     delta_angle = np.arctan2(np.sin(delta_angle), np.cos(delta_angle))
-    curr_x, curr_y = send_SKR_command_arc(curr_x, curr_y, -np.pi/2, -np.pi/2 + delta_angle, 16)
+    curr_x, curr_y = send_SKR_command_arc(curr_x, curr_y, -np.pi/2, -np.pi/2 + delta_angle, 20, False)
 
     # Retract
     send_SKR_command(z_pos=0)
@@ -575,8 +590,8 @@ def turn_rotary_valve(angle):
         angle_y = np.deg2rad(y / (FRAME_HEIGHT / 2) * (42.5 / 2))
         # print(angle)
 
-        dist_x = np.tan(angle_x) * 110 # mm
-        dist_y = np.tan(angle_y) * 110 # mm
+        dist_x = np.tan(angle_x) * 165 # mm
+        dist_y = np.tan(angle_y) * 165 # mm
 
         # For some reason we think the valve is pointing down, which is not
         # possible. So, manually flip the adjustment here.
@@ -591,23 +606,24 @@ def turn_rotary_valve(angle):
     # Move to start position
     moveRelDistXSLOW(0.15)
     curr_x += 40
-    curr_y += 30
+    curr_y -= 10
 
     # Now move to a spot inside the valve where there is a "hole"
     delta_angle = angle - curr_rot
     delta_angle = np.arctan2(np.sin(delta_angle), np.cos(delta_angle))
 
-    angle_offset = np.deg2rad(30) * (-1 if delta_angle > 0 else 1)
+    angle_offset = np.deg2rad(30) * (1 if delta_angle > 0 else -1)
     curr_x -= np.cos(curr_rot + angle_offset) * 50
     curr_y += np.sin(curr_rot + angle_offset) * 50
+    curr_y -= 10
 
     send_SKR_command(x_pos=curr_x, y_pos=curr_y)
-    send_SKR_command(z_pos=65)
+    send_SKR_command(z_pos=25)
 
     # Calculate goal position
     delta_angle -= angle_offset
     delta_angle = np.arctan2(np.sin(delta_angle), np.cos(delta_angle))
-    curr_x, curr_y = send_SKR_command_arc(curr_x, curr_y, curr_rot + angle_offset, delta_angle, 29)
+    curr_x, curr_y = send_SKR_command_arc(curr_x, curr_y, curr_rot + angle_offset, delta_angle, 35, False, direction="G3 " if delta_angle > 0 else "G2 ")
 
     # Retract
     send_SKR_command(z_pos=0)

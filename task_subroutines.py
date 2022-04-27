@@ -515,8 +515,7 @@ def turn_towards_spigot(angle):
     # Calculate goal position
     delta_angle = angle - curr_rot
     delta_angle = np.arctan2(np.sin(delta_angle), np.cos(delta_angle))
-
-    # TODO: Call arc command here @Joel
+    curr_x, curr_y = send_SKR_command_arc(curr_x, curr_y, -np.pi/2, -np.pi/2 + delta_angle, 16)
 
     # Retract
     send_SKR_command(z_pos=0)
@@ -606,8 +605,9 @@ def turn_rotary_valve(angle):
     send_SKR_command(z_pos=65)
 
     # Calculate goal position
-
-    # TODO: Call arc command here @Joel
+    delta_angle -= angle_offset
+    delta_angle = np.arctan2(np.sin(delta_angle), np.cos(delta_angle))
+    curr_x, curr_y = send_SKR_command_arc(curr_x, curr_y, curr_rot + angle_offset, delta_angle, 29)
 
     # Retract
     send_SKR_command(z_pos=0)

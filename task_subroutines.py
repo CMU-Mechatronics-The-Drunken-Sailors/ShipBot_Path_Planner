@@ -26,7 +26,7 @@ def flip_breaker_down(curr_x):
 
     # Align with panel again
     moveRelDistXVERYSLOW(0.1)
-    moveRelDistX(-0.05)
+    moveRelDistXSLOW(-0.05)
 
     # Move finger back
     send_SKR_command(z_pos=0)
@@ -96,7 +96,7 @@ def flip_breaker_up(curr_x):
 
     # Align with panel again
     moveRelDistXVERYSLOW(0.1)
-    moveRelDistX(-0.05)
+    moveRelDistXSLOW(-0.05)
 
     # Move finger back
     send_SKR_command(z_pos=0)

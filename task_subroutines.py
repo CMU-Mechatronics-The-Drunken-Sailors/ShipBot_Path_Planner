@@ -142,7 +142,6 @@ def flip_breaker_up(curr_x):
     send_SKR_command(y_pos=100, z_pos=5)
 
     moveRelDistX(-0.1)
-    # wahoo?
 
 def open_upwards_stopcock():
     print("Open upwards stopcock!")

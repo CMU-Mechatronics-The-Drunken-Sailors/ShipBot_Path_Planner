@@ -74,9 +74,7 @@ def orient_camera():
 
 # assume that we are at the starting position, facing .58 m away from the wall
 def navigate_stations():
-    # # Reverse
-    # moveRelDistXSLOW(-0.2)
-    # extend_pair_retract_solo()
+    NEXT_STATION = -0.315 # stations are 1 ft apart
 
     # get close to station A and perform task
     station = station_list[0]
@@ -89,7 +87,7 @@ def navigate_stations():
         choose_task_subroutine(station)
         moveRelDistXSLOW(-0.4)
         time.sleep(1)
-    moveRelDistYSLOW(-0.315) # move to station B
+    moveRelDistYSLOW(NEXT_STATION) # move to station B
 
     # get close to station B and perform task
     station = station_list[1]
@@ -102,7 +100,7 @@ def navigate_stations():
         choose_task_subroutine(station)
         moveRelDistXSLOW(-0.4)
         time.sleep(1)
-    moveRelDistYSLOW(-0.315) # move to station C
+    moveRelDistYSLOW(NEXT_STATION) # move to station C
 
     # get close to station C and perform task
     station = station_list[2]
@@ -115,7 +113,7 @@ def navigate_stations():
         choose_task_subroutine(station)
         moveRelDistXSLOW(-0.4)
         time.sleep(1)
-    moveRelDistYSLOW(-0.315) # move to station D  
+    moveRelDistYSLOW(NEXT_STATION) # move to station D  
 
     # get close to station D and perform task
     station = station_list[3]
@@ -125,12 +123,10 @@ def navigate_stations():
     moveRelDistXSLOW(-0.25)
     extend_pair_retract_solo()
     time.sleep(2)
-    # moveRelDistXSLOW(0.3) # move forward slightly
     if len(station.task_list):
         orient_camera()
         choose_task_subroutine(station)
-        # moveRelDistXSLOW(-0.2) # move back slightly?
-    moveRelDistYSLOW(-0.315) # move to station E
+    moveRelDistYSLOW(NEXT_STATION) # move to station E
 
     # perform task for station E, then rotate to face station F
     station = station_list[4]
@@ -156,7 +152,7 @@ def navigate_stations():
     if len(station.task_list):
         orient_camera()
         choose_task_subroutine(station)
-    moveRelDistYSLOW(-0.3) # move over to station G
+    moveRelDistYSLOW(NEXT_STATION) # move over to station G
     time.sleep(1)
 
     # perform task for station G
@@ -168,8 +164,8 @@ def navigate_stations():
 
     # check if we need to move over to station H, in case there is a pipe at the end
     station = station_list[7]
-    if not len(station.task_list): return
-    moveRelDistYSLOW(-0.3) # move over to station H
+    if not len(station.task_list): return # wahoo!
+    moveRelDistYSLOW(NEXT_STATION) # move over to station H
     time.sleep(1)
 
     # perform task for station G

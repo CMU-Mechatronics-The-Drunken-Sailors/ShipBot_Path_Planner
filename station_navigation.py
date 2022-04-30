@@ -5,9 +5,9 @@ from ..Command_Hub import *
 from .planner import *
 from .camera_helpers import *
 
-LEFT_BREAKER = 240
+LEFT_BREAKER = 210
 MID_BREAKER = 131.5
-RIGHT_BREAKER = 60
+RIGHT_BREAKER = 20
 
 def choose_task_subroutine(station):
     for task in station.task_list:
@@ -74,7 +74,7 @@ def orient_camera():
 
 # assume that we are at the starting position, facing .58 m away from the wall
 def navigate_stations():
-    NEXT_STATION = -0.315 # stations are 1 ft apart
+    NEXT_STATION = -0.355 # stations are 1 ft apart
 
     # get close to station A and perform task
     station = station_list[0]
@@ -135,12 +135,12 @@ def navigate_stations():
         orient_camera()
         choose_task_subroutine(station)
     retract_pair_retract_solo() # rotate to face station F
-    moveRelDistYSLOW(0.1)
+    moveRelDistYSLOW(0.2)
     turnRelAngle(-1.57079633)
     time.sleep(1)
     moveRelDistY(0.4) # move left toward wall and back slightly
     moveRelDistYSLOW(-0.1)
-    moveRelDistXSLOW(-0.225)
+    moveRelDistX(-0.1)
     moveRelDistY(0.2)
     moveRelDistY(-0.025)
     time.sleep(1)
@@ -152,7 +152,7 @@ def navigate_stations():
     if len(station.task_list):
         orient_camera()
         choose_task_subroutine(station)
-    moveRelDistYSLOW(NEXT_STATION) # move over to station G
+    moveRelDistYSLOW(-.315) # move over to station G
     time.sleep(1)
 
     # perform task for station G
@@ -165,7 +165,7 @@ def navigate_stations():
     # check if we need to move over to station H, in case there is a pipe at the end
     station = station_list[7]
     if not len(station.task_list): return # wahoo!
-    moveRelDistYSLOW(NEXT_STATION) # move over to station H
+    moveRelDistYSLOW(-.315) # move over to station H
     time.sleep(1)
 
     # perform task for station G

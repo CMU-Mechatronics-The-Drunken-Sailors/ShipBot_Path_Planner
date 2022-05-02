@@ -26,14 +26,15 @@ def flip_breaker_down(curr_x):
 
     # Align with panel again
     moveRelDistXVERYSLOW(0.15)
-    moveRelDistXSLOW(-0.05)
+    resetFF(0,0,0)
+    moveRelDistX(-0.05)
 
     # Move finger back
     send_SKR_command(z_pos=0)
     send_SKR_command(x_pos=curr_x, y_pos=45)
 
     # align camera with middle of target breaker
-    for _ in range(3):
+    for _ in range(5):
         pos, state = get_breaker_x_in_center_of_frame()
         # if state == BreakerState.DOWN or state == BreakerState.DOWN_UPSIDE_DOWN:
         #     # We're done. Stop here.
@@ -49,7 +50,7 @@ def flip_breaker_down(curr_x):
         angle = np.deg2rad(pos / (FRAME_WIDTH / 2) * (69.4 / 2))
         # print(angle)
 
-        dist = np.tan(angle) * 80 # mm
+        dist = np.tan(angle) * 65 # mm
         curr_x -= dist
 
         send_SKR_command(x_pos=curr_x)
@@ -57,10 +58,10 @@ def flip_breaker_down(curr_x):
     # Distance from end effector to camera is 38.1 mm (left)
     # Move finger to final position
     curr_x += 38.1 + 2
-    send_SKR_command(x_pos=curr_x, y_pos=90)
+    send_SKR_command(x_pos=curr_x, y_pos=100)
 
     # Flip breaker
-    send_SKR_command(z_pos=22)
+    send_SKR_command(z_pos=35)
     # moveRelDistXVERYSLOW(0.1)
     # send_SKR_command(z_pos=0)
 
@@ -95,14 +96,15 @@ def flip_breaker_up(curr_x):
 
     # Align with panel again
     moveRelDistXVERYSLOW(0.15)
-    moveRelDistXSLOW(-0.05)
+    resetFF(0,0,0)
+    moveRelDistX(-0.05)
 
     # Move finger back
     send_SKR_command(z_pos=0)
     send_SKR_command(x_pos=curr_x, y_pos=45)
 
     # align camera with middle of target breaker
-    for _ in range(3):
+    for _ in range(5):
         pos, state = get_breaker_x_in_center_of_frame()
         # if state == BreakerState.UP or state == BreakerState.UP_UPSIDE_DOWN:
         #     # We're done. Stop here.
@@ -117,7 +119,7 @@ def flip_breaker_up(curr_x):
         angle = np.deg2rad(pos / (FRAME_WIDTH / 2) * (69.4 / 2))
         # print(angle)
 
-        dist = np.tan(angle) * 80 # mm
+        dist = np.tan(angle) * 65 # mm
         curr_x -= dist
 
         send_SKR_command(x_pos=curr_x)
@@ -128,7 +130,7 @@ def flip_breaker_up(curr_x):
     send_SKR_command(x_pos=curr_x, y_pos=40)
 
     # Flip breaker
-    send_SKR_command(z_pos=22)
+    send_SKR_command(z_pos=35)
     # moveRelDistXVERYSLOW(0.1)
     # send_SKR_command(z_pos=0)
 
@@ -149,6 +151,7 @@ def open_upwards_stopcock():
     retract_pair_retract_solo()
     time.sleep(0.5)
     moveRelDistXSLOW(0.4)
+    resetFF(0,0,0)
     moveRelDistXSLOW(-0.15)
 
     # Extend finger to start pos (wait at least 1.5s so that the actuator is fully down)
@@ -158,51 +161,53 @@ def open_upwards_stopcock():
     send_SKR_command(x_pos=curr_x, y_pos=215, z_pos=curr_y)
     time.sleep(max(0, 1.5 - (time.time() - startTime)))
 
-    # Center with valve
-    max_refines = 3
-    for _ in range(5):
-        if max_refines <= 0:
-            break
+    # # Center with valve
+    # max_refines = 3
+    # for _ in range(5):
+    #     if max_refines <= 0:
+    #         break
 
-        x, y, rot = get_stopcock_pos()
-        print(f"Detected stopcock rotation: {rot}")
-        if x is None or y is None:
-            curr_x -= 10
-            curr_y += 10
-            send_SKR_command(x_pos=curr_x, z_pos=curr_y)
-            continue
-        if rot is not None and abs(rot - np.pi / 2) > np.pi / 4:
-            # We're done! Valve already in desired pose. Stop here
-            moveRelDistXSLOW(-0.25)
+    #     x, y, rot = get_stopcock_pos()
+    #     print(f"Detected stopcock rotation: {rot}")
+    #     if x is None or y is None:
+    #         curr_x -= 10
+    #         curr_y += 10
+    #         send_SKR_command(x_pos=curr_x, z_pos=curr_y)
+    #         continue
+    #     if rot is not None and abs(rot - np.pi / 2) > np.pi / 4:
+    #         # We're done! Valve already in desired pose. Stop here
+    #         moveRelDistXSLOW(-0.25)
 
-            extend_pair_retract_solo()
-            send_SKR_command(x_pos=131.5, y_pos=100, z_pos=0)
-            return
+    #         extend_pair_retract_solo()
+    #         send_SKR_command(x_pos=131.5, y_pos=100, z_pos=0)
+    #         return
         
-        max_refines -= 1
+    #     max_refines -= 1
 
-        # Horizontal FOV is 69.4 degrees, VFOV is 42.5 degrees
-        angle_x = np.deg2rad(x / (FRAME_WIDTH / 2) * (69.4 / 2))
-        angle_y = np.deg2rad(y / (FRAME_HEIGHT / 2) * (42.5 / 2))
-        # print(angle)
+    #     # Horizontal FOV is 69.4 degrees, VFOV is 42.5 degrees
+    #     angle_x = np.deg2rad(x / (FRAME_WIDTH / 2) * (69.4 / 2))
+    #     angle_y = np.deg2rad(y / (FRAME_HEIGHT / 2) * (42.5 / 2))
+    #     # print(angle)
 
-        dist_x = np.tan(angle_x) * 110 # mm
-        dist_y = np.tan(angle_y) * 110 # mm
-        curr_x -= dist_x
-        curr_y -= dist_y
+    #     dist_x = np.tan(angle_x) * 110 # mm
+    #     dist_y = np.tan(angle_y) * 110 # mm
+    #     curr_x -= dist_x
+    #     curr_y -= dist_y
 
-        send_SKR_command(x_pos=curr_x, z_pos=curr_y)
+    #     send_SKR_command(x_pos=curr_x, z_pos=curr_y)
 
     # Move to start position
-    curr_x += 90
-    curr_y -= 30
+    curr_x += 50
+    curr_y = 0
     send_SKR_command(x_pos=curr_x, z_pos=curr_y, y_pos=150)
-    moveRelDistXSLOW(0.1)
+    moveRelDistXSLOW(0.2)
+    resetFF(0,0,0)
 
     # Move to goal position
     curr_x -= 85
-    curr_y += 30
-    send_SKR_command(x_pos=curr_x, z_pos=curr_y)
+    send_SKR_command(x_pos=curr_x)
+    curr_y += 60
+    send_SKR_command(z_pos=curr_y)
 
     # Move back a bit
     curr_y -= 20
@@ -210,7 +215,7 @@ def open_upwards_stopcock():
 
     # Back out
     send_SKR_command(y_pos=215)
-    moveRelDistXSLOW(-0.3)
+    moveRelDistXSLOW(-0.25)
 
     extend_pair_retract_solo()
     send_SKR_command(x_pos=131.5, y_pos=100, z_pos=0)
@@ -293,7 +298,7 @@ def close_upwards_stopcock():
 
     # Back out
     send_SKR_command(y_pos=215)
-    moveRelDistXSLOW(-0.4)
+    moveRelDistXSLOW(-0.25)
 
     extend_pair_retract_solo()
     send_SKR_command(x_pos=131.5, y_pos=100, z_pos=0)
@@ -305,6 +310,7 @@ def open_towards_stopcock():
     retract_pair_retract_solo()
     time.sleep(0.5)
     moveRelDistXSLOW(0.4)
+    resetFF(0,0,0)
     moveRelDistXSLOW(-0.25)
 
     # Extend finger to start pos (wait at least 1.5s so that the actuator is fully down)
@@ -347,7 +353,7 @@ def open_towards_stopcock():
         send_SKR_command(x_pos=curr_x, y_pos=curr_y)
 
     # Move to start position
-    moveRelDistXSLOW(0.07)
+    moveRelDistXSLOW(0.125)
     curr_x += 10
     curr_y -= 20
     send_SKR_command(x_pos=curr_x, y_pos=curr_y, z_pos=65)
@@ -372,6 +378,7 @@ def close_towards_stopcock():
     retract_pair_retract_solo()
     time.sleep(0.5)
     moveRelDistXSLOW(0.4)
+    resetFF(0,0,0)
     moveRelDistXSLOW(-0.3)
 
     # Extend finger to start pos (wait at least 1.5s so that the actuator is fully down)
@@ -445,6 +452,7 @@ def turn_upwards_spigot(angle):
     retract_pair_retract_solo()
     time.sleep(0.5)
     moveRelDistXSLOW(0.4)
+    resetFF(0,0,0)
 
     # Back out
     send_SKR_command(z_pos=0)
@@ -468,6 +476,7 @@ def turn_towards_spigot(angle):
     retract_pair_retract_solo()
     time.sleep(0.5)
     moveRelDistXSLOW(0.4)
+    resetFF(0,0,0)
     moveRelDistXSLOW(-0.165)
 
     # Extend finger to start pos (wait at least 1.5s so that the actuator is fully down)
@@ -550,6 +559,7 @@ def turn_rotary_valve(angle):
     retract_pair_retract_solo()
     time.sleep(0.5)
     moveRelDistXSLOW(0.4)
+    resetFF(0,0,0)
     moveRelDistXSLOW(-0.3)
 
     # Extend finger to start pos (wait at least 1.5s so that the actuator is fully down)

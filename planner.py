@@ -32,7 +32,7 @@ ALPHAMAX = 0.7
 WMAX = 1
 
 FBK_ON = True
-FBK_lambda = 11 #7
+FBK_lambda = 7 #11
 FBK_kX = 1.0 / FBK_lambda
 FBK_kY = 1.0 / (FBK_lambda)
 FBK_kTh = 2.0 / FBK_lambda * 1.5

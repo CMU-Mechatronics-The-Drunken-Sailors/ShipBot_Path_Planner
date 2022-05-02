@@ -100,7 +100,7 @@ def navigate_stations():
         choose_task_subroutine(station)
         moveRelDistXSLOW(-0.4)
         time.sleep(1)
-    moveRelDistYSLOW(NEXT_STATION) # move to station C
+    moveRelDistYSLOW(NEXT_STATION - 0.025) # move to station C
 
     # get close to station C and perform task
     station = station_list[2]
@@ -120,6 +120,7 @@ def navigate_stations():
     print("Currently on: " + station.name)
     retract_pair_retract_solo()
     moveRelDistX(0.65) # Slam against wall to align
+    resetFF(0,0,0)
     moveRelDistXSLOW(-0.25)
     extend_pair_retract_solo()
     time.sleep(2)
@@ -139,12 +140,12 @@ def navigate_stations():
     turnRelAngle(-1.57079633)
     time.sleep(1)
     moveRelDistY(0.4) # move left toward wall and back slightly
-    moveRelDistYSLOW(-0.1)
+    resetFF(0,0,0)
+    moveRelDistY(-0.1)
     moveRelDistX(-0.1)
     moveRelDistY(0.2)
-    moveRelDistY(-0.025)
-    time.sleep(1)
     resetFF(0,0,0)
+    moveRelDistY(-0.025)
 
     # perform task for station F
     station = station_list[5]

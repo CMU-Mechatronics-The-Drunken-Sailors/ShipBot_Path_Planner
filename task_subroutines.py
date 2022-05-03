@@ -20,6 +20,17 @@ def flip_breaker_down(curr_x):
     moveRelDistXSLOW(0.3)
     moveRelDistXSLOW(-0.17)
 
+    # Move over if needed
+    moveBackFn = lambda : None
+    if curr_x < 90:
+        moveRelDistY(-0.05)
+        curr_x += 20
+        moveBackFn = lambda : moveRelDistY(0.05)
+    elif curr_x > 180:
+        moveRelDistY(0.05)
+        curr_x -= 20
+        moveBackFn = lambda : moveRelDistY(-0.05)
+
     # Extend finger
     extend_pair_retract_solo()
     send_SKR_command(y_pos=10, z_pos=(15)) # 44.45 is the distance from the camera to the fingertip
@@ -77,6 +88,8 @@ def flip_breaker_down(curr_x):
 
     moveRelDistX(-0.1)
 
+    moveBackFn()
+
 def flip_breaker_up(curr_x):
     print("Flip breaker up!")
 
@@ -85,10 +98,22 @@ def flip_breaker_up(curr_x):
     time.sleep(0.5)
 
     send_SKR_command(x_pos=131.5, z_pos=0)
+
+    # Move over if needed
+    moveBackFn = lambda : None
+    if curr_x < 90:
+        moveRelDistY(-0.05)
+        curr_x += 20
+        moveBackFn = lambda : moveRelDistY(0.05)
+    elif curr_x > 180:
+        moveRelDistY(0.05)
+        curr_x -= 20
+        moveBackFn = lambda : moveRelDistY(-0.05)
     
     # Move forward to align, then move back
     moveRelDistXSLOW(0.3)
     moveRelDistXSLOW(-0.17)
+
 
     # Extend finger
     extend_pair_retract_solo()
@@ -134,7 +159,7 @@ def flip_breaker_up(curr_x):
     # moveRelDistXVERYSLOW(0.1)
     # send_SKR_command(z_pos=0)
 
-    send_SKR_command(y_pos=110)
+    send_SKR_command(y_pos=120) # go higher?
     time.sleep(.25)
 
     # reset all
@@ -143,6 +168,8 @@ def flip_breaker_up(curr_x):
     send_SKR_command(y_pos=100, z_pos=5)
 
     moveRelDistX(-0.1)
+
+    moveBackFn()
 
 def open_upwards_stopcock():
     print("Open upwards stopcock!")
@@ -204,7 +231,7 @@ def open_upwards_stopcock():
     resetFF(0,0,0)
 
     # Move to goal position
-    curr_x -= 85
+    curr_x -= 105
     send_SKR_command(x_pos=curr_x)
     curr_y += 60
     send_SKR_command(z_pos=curr_y)
@@ -426,7 +453,7 @@ def close_towards_stopcock():
         send_SKR_command(x_pos=curr_x, y_pos=curr_y)
 
     # Move to start position
-    moveRelDistXSLOW(0.125)
+    moveRelDistX(0.15)
     curr_x += 70
     send_SKR_command(x_pos=curr_x)
     curr_y += 10
@@ -616,7 +643,7 @@ def turn_rotary_valve(angle):
         send_SKR_command(x_pos=curr_x, y_pos=curr_y)
 
     # Move to start position
-    moveRelDistXSLOW(0.15)
+    moveRelDistXSLOW(0.15) # do we need to get closer?
     curr_x += 40
     curr_y -= 10
 

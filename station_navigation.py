@@ -119,7 +119,7 @@ def navigate_stations():
     station = station_list[3]
     print("Currently on: " + station.name)
     retract_pair_retract_solo()
-    moveRelDistX(0.65) # Slam against wall to align
+    moveRelDistX(0.75) # Slam against wall to align
     resetFF(0,0,0)
     moveRelDistXSLOW(-0.25)
     extend_pair_retract_solo()
@@ -153,7 +153,7 @@ def navigate_stations():
     if len(station.task_list):
         orient_camera()
         choose_task_subroutine(station)
-    moveRelDistYSLOW(-.315) # move over to station G
+    moveRelDistYSLOW(-.28) # move over to station G
     time.sleep(1)
 
     # perform task for station G

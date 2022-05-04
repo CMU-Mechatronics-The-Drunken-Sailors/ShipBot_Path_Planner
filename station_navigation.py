@@ -6,7 +6,7 @@ from .planner import *
 from .camera_helpers import *
 
 LEFT_BREAKER = 210
-MID_BREAKER = 131.5
+MID_BREAKER = 105
 RIGHT_BREAKER = 20
 
 def choose_task_subroutine(station):
@@ -100,7 +100,7 @@ def navigate_stations():
         choose_task_subroutine(station)
         moveRelDistXSLOW(-0.4)
         time.sleep(1)
-    moveRelDistYSLOW(NEXT_STATION - 0.025) # move to station C
+    moveRelDistYSLOW(NEXT_STATION) # move to station C
 
     # get close to station C and perform task
     station = station_list[2]

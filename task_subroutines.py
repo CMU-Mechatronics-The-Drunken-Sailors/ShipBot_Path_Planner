@@ -457,7 +457,7 @@ def close_towards_stopcock():
     curr_x += 70
     send_SKR_command(x_pos=curr_x)
     curr_y += 10
-    send_SKR_command(y_pos=curr_y, z_pos=65)
+    send_SKR_command(y_pos=curr_y, z_pos=50)
 
     # Move to goal position
     curr_x -= 125
@@ -560,20 +560,49 @@ def turn_towards_spigot(angle):
         send_SKR_command(x_pos=curr_x, y_pos=curr_y)
 
     # Move to start position
-    # moveRelDistXSLOW(0.1)
+    moveRelDistXSLOW(0.175) # do we need to get closer? - yes
     curr_x += 40
-    curr_y += 5
-    send_SKR_command(x_pos=curr_x, y_pos=curr_y)
-    send_SKR_command(z_pos=40)
+    curr_y -= 10
 
-    # Calculate goal position
+    # Now move to a spot inside the valve where there is a "hole"
     delta_angle = angle - curr_rot
     delta_angle = np.arctan2(np.sin(delta_angle), np.cos(delta_angle))
-    curr_x, curr_y = send_SKR_command_arc(curr_x, curr_y, -np.pi/2, -np.pi/2 + delta_angle, 20, False)
+
+    angle_offset = np.deg2rad(30) * (-1 if delta_angle > 0 else 1)
+    curr_x -= np.cos(curr_rot + angle_offset) * 50
+    curr_y += np.sin(curr_rot + angle_offset) * 50
+    curr_y -= 5
+    curr_x -= 10
+
+    send_SKR_command(x_pos=curr_x, y_pos=curr_y)
+    send_SKR_command(z_pos=35)
+
+    # Calculate goal position
+    delta_angle -= angle_offset
+    delta_angle = np.arctan2(np.sin(delta_angle), np.cos(delta_angle))
+    end_angle = curr_rot + angle_offset + delta_angle
+    end_angle = np.arctan2(np.sin(end_angle), np.cos(end_angle))
+    curr_x, curr_y = send_SKR_command_arc(curr_x, curr_y, curr_rot + angle_offset, end_angle, 35, False, direction="G2 " if delta_angle > 0 else "G3 ")
 
     # Retract
     send_SKR_command(z_pos=0)
     moveRelDistXSLOW(-0.2)
+
+    # # Move to start position
+    # # moveRelDistXSLOW(0.1)
+    # curr_x += 40
+    # curr_y += 5
+    # send_SKR_command(x_pos=curr_x, y_pos=curr_y)
+    # send_SKR_command(z_pos=40)
+
+    # # Calculate goal position
+    # delta_angle = angle - curr_rot
+    # delta_angle = np.arctan2(np.sin(delta_angle), np.cos(delta_angle))
+    # curr_x, curr_y = send_SKR_command_arc(curr_x, curr_y, -np.pi/2, -np.pi/2 + delta_angle, 20, False)
+
+    # # Retract
+    # send_SKR_command(z_pos=0)
+    # moveRelDistXSLOW(-0.2)
 
 def turn_rotary_valve(angle):
     print("Turn rotary valve!")
@@ -614,10 +643,9 @@ def turn_rotary_valve(angle):
             continue    
 
         if rot is not None and rot != 0: # If == 0 exactly, then we didn't find the angle correctly
-
             delta_angle = angle - rot
             delta_angle = np.arctan2(np.sin(delta_angle), np.cos(delta_angle))
-            if abs(delta_angle) <= np.deg2rad(15):
+            if max_refines <= 1 and abs(delta_angle) <= np.deg2rad(15):
                 # We're done! Valve already in desired pose. Stop here
                 moveRelDistXSLOW(-0.15)
                 return
@@ -643,7 +671,7 @@ def turn_rotary_valve(angle):
         send_SKR_command(x_pos=curr_x, y_pos=curr_y)
 
     # Move to start position
-    moveRelDistXSLOW(0.15) # do we need to get closer?
+    moveRelDistXSLOW(0.175) # do we need to get closer? - yes
     curr_x += 40
     curr_y -= 10
 
@@ -651,18 +679,22 @@ def turn_rotary_valve(angle):
     delta_angle = angle - curr_rot
     delta_angle = np.arctan2(np.sin(delta_angle), np.cos(delta_angle))
 
-    angle_offset = np.deg2rad(30) * (1 if delta_angle > 0 else -1)
+    angle_offset = np.deg2rad(30) * (-1 if delta_angle > 0 else 1)
     curr_x -= np.cos(curr_rot + angle_offset) * 50
     curr_y += np.sin(curr_rot + angle_offset) * 50
-    curr_y -= 10
+    curr_y -= 5
+    curr_x -= 10
 
     send_SKR_command(x_pos=curr_x, y_pos=curr_y)
-    send_SKR_command(z_pos=25)
+    send_SKR_command(z_pos=35)
 
     # Calculate goal position
     delta_angle -= angle_offset
+    delta_angle += np.deg2rad(30) * (1 if delta_angle > 0 else -1) # Turn a bit more bc of slop in the end effector
     delta_angle = np.arctan2(np.sin(delta_angle), np.cos(delta_angle))
-    curr_x, curr_y = send_SKR_command_arc(curr_x, curr_y, curr_rot + angle_offset, delta_angle, 35, False, direction="G3 " if delta_angle > 0 else "G2 ")
+    end_angle = curr_rot + angle_offset + delta_angle
+    end_angle = np.arctan2(np.sin(end_angle), np.cos(end_angle))
+    curr_x, curr_y = send_SKR_command_arc(curr_x, curr_y, curr_rot + angle_offset, end_angle, 35, False, direction="G2 " if delta_angle > 0 else "G3 ")
 
     # Retract
     send_SKR_command(z_pos=0)

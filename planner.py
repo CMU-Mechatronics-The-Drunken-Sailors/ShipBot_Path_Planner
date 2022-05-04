@@ -32,7 +32,7 @@ ALPHAMAX = 0.7
 WMAX = 1
 
 FBK_ON = True
-FBK_lambda = 7 #11
+FBK_lambda = 9 #11
 FBK_kX = 1.0 / FBK_lambda
 FBK_kY = 1.0 / (FBK_lambda)
 FBK_kTh = 2.0 / FBK_lambda * 1.5
@@ -248,7 +248,7 @@ def moveRelDistY(dist):
 def moveRelDistYSLOW(dist):
     moveRelDist(
         dist,
-        lambda t, dist: [0, trapezoidalVelocityProfile(t, dist, VMAX/2, AMAX), 0],
+        lambda t, dist: [0, trapezoidalVelocityProfile(t, dist, VMAX/1.75, AMAX), 0],
         calcTrapVelTrajectoryTime(dist, VMAX, AMAX),
     )
     # resetFF(0,0,0)

@@ -166,7 +166,7 @@ def navigate_stations():
     # check if we need to move over to station H, in case there is a pipe at the end
     station = station_list[7]
     if not len(station.task_list): return # wahoo!
-    moveRelDistYSLOW(-.315) # move over to station H
+    moveRelDistYSLOW(-.335) # move over to station H
     time.sleep(1)
 
     # perform task for station G

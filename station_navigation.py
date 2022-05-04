@@ -74,7 +74,7 @@ def orient_camera():
 
 # assume that we are at the starting position, facing .58 m away from the wall
 def navigate_stations():
-    NEXT_STATION = -0.355 # stations are 1 ft apart
+    NEXT_STATION = -0.335 # stations are 1 ft apart
 
     # get close to station A and perform task
     station = station_list[0]

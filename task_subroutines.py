@@ -694,8 +694,9 @@ def turn_rotary_valve(angle):
     delta_angle = np.arctan2(np.sin(delta_angle), np.cos(delta_angle))
     end_angle = curr_rot + angle_offset + delta_angle
     end_angle = np.arctan2(np.sin(end_angle), np.cos(end_angle))
+    delta_angle = end_angle - (curr_rot + angle_offset)
     curr_x, curr_y = send_SKR_command_arc(curr_x, curr_y, curr_rot + angle_offset, end_angle, 35, False, direction="G2 " if delta_angle > 0 else "G3 ")
 
     # Retract
-    send_SKR_command(z_pos=0)
     moveRelDistXSLOW(-0.2)
+    send_SKR_command(z_pos=0)
